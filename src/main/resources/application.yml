@@ -1,0 +1,81 @@
+#-------------  公共的配置属性  ---------------
+spring:
+  profiles:
+    #使用mysql或oracle改下面属性即可
+    active: oracle
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      # 连接池名称
+      pool-name: MyHikariCP
+      #最小空闲连接，默认值10，小于0或大于maximum-pool-size，都会重置为maximum-pool-size
+      minimum-idle: 10
+      #连接池最大连接数，默认是10 (cpu核数量 * 2 + 硬盘数量)
+      maximum-pool-size: 30
+      #空闲连接超时时间，默认值600000（10分钟），大于等于max-lifetime且max-lifetime>0，会被重置为0；不等于0且小于10秒，会被重置为10秒。
+      idle-timeout: 600000
+      #连接最大存活时间，不等于0且小于30秒，会被重置为默认值30分钟.设置应该比mysql设置的超时时间短
+      max-lifetime: 1800000
+      #连接超时时间：毫秒，小于250毫秒，否则被重置为默认值30秒
+      connection-timeout: 30000
+  jpa:
+    show-sql: true
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+        enable_lazy_load_no_trans: true
+
+#-------------  mysql  配置  ---------------
+---
+spring:
+  config:
+    activate:
+      on-profile: mysql
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/db_adapter?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=GMT%2b8&characterEncoding=utf8&connectTimeout=1000&socketTimeout=15000&autoReconnect=true&cachePrepStmts=true&useServerPrepStmts=true
+    username: root
+    password: 123456
+    hikari:
+      #用于测试连接是否可用的查询语句
+      connection-test-query: SELECT 1
+  jpa:
+    database: mysql
+    hibernate:
+    properties:
+      hibernate:
+        jdbc:
+        #配置hibernate方言使用Mysql
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+
+#-------------  oracle  配置  ---------------
+---
+spring:
+  config:
+    activate:
+      on-profile: oracle
+  datasource:
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    url: jdbc:oracle:thin:@localhost:1521:ORCL
+    username: DBADAPTER
+    password: 123456
+    hikari:
+      #用于测试连接是否可用的查询语句
+      connection-test-query: SELECT * from dual
+  jpa:
+    database: oracle
+    properties:
+      hibernate:
+        jdbc:
+        #配置hibernate方言使用Oracle
+        dialect: org.hibernate.dialect.OracleDialect
+
+
+#-------------  可以再扩展支持hibernate方言的数据库 ---------------
+
+
+
